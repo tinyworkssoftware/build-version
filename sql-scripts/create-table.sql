@@ -20,8 +20,8 @@ create table tbl_plan_type (
 create table tbl_organisation (
     id varchar(36) primary key ,
     name varchar(100) not null unique,
-    created_ts timestamp not null,
-    updated_ts timestamp not null,
+    created_ts timestamp not null default CURRENT_TIMESTAMP,
+    updated_ts timestamp not null default CURRENT_TIMESTAMP,
     plan_type varchar(36) not null ,
     foreign key (plan_type) references tbl_plan_type(id),
     index (id, name)

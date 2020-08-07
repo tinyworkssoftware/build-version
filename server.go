@@ -2,11 +2,8 @@ package main
 
 import (
 	"build-version/api"
-	"build-version/model/toml"
 	"fmt"
-	"github.com/BurntSushi/toml"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 )
 
@@ -20,10 +17,6 @@ var (
 )
 
 func main() {
-	var conf model.TomlConfig
-	if _, err := toml.DecodeFile("config.toml", &conf); err != nil {
-		log.Fatal(err)
-	}
 	app := App{}
 	app.Initialize()
 	app.Run(port)
@@ -34,6 +27,7 @@ func (app *App) Initialize() {
 	router.HandleFunc(fmt.Sprintf("%s/healthcheck", apiPrefix), api.HealthCheckApiHandler).Methods(http.MethodGet)
 	router.HandleFunc(fmt.Sprintf("%s/session/start", apiPrefix), api.StartSessionApiHandler).Methods(http.MethodPost, http.MethodPut)
 	router.HandleFunc(fmt.Sprintf("%s/session/end", apiPrefix), api.EndSessionApiHandler).Methods(http.MethodPost, http.MethodPut)
+	router.HandleFunc(fmt.Sprintf("%s/plan", apiPrefix), api.GetAvailablePlansApiHandler).Methods(http.MethodGet)
 	router.Use(mux.CORSMethodMiddleware(router))
 	app.Router = router
 }

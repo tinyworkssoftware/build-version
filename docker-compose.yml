@@ -1,0 +1,15 @@
+version: "2.0"
+services:
+  mysql:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+    - 3306:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: P@ssw0rd12345
+  redis:
+    image: redis:latest
+    command: redis-server --requirepass HOCUSPOCUS
+    ports:
+    - 6379:6379
