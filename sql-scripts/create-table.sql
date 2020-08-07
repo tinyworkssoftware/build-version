@@ -1,3 +1,5 @@
+create schema if not exists build_version_db;
+
 use build_version_db;
 drop table if exists tbl_active_session;
 drop table if exists tbl_session_history;
