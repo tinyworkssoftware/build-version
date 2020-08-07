@@ -1,0 +1,17 @@
+[database]
+username = "root"
+password = "P@ssw0rd12345"
+database_name = "build_version_db"
+database_url = "localhost:3306"
+
+[application]
+timeout = "15s"
+enable_cache = true
+#Cache type can be [redis|dynamodb|mongodb]
+cache = "redis"
+self_hosted = true
+
+[git]
+#Source can be gitlab|github|bitbucket|gitea
+source = "gitlab"
+access_token=""
