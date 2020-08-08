@@ -1,9 +1,10 @@
 package service
 
-func startSession() {
+func StartSession() {
 
 }
 
-func endSession() {
+func EndSession() {
 
 }
+

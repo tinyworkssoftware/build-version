@@ -34,6 +34,7 @@ create table tbl_project (
     updated_ts timestamp not null default CURRENT_TIMESTAMP,
     organisation varchar(36) not null,
     exceeded_limit bool not null default false,
+    access_code varchar(36) not null unique,
     foreign key (organisation) references tbl_organisation(id),
     index (id, name)
 );
@@ -69,3 +70,7 @@ values
        (uuid(), 'professional', 5000, 20, 3.99),
        (uuid(), 'enterprise', 9999999, 9999999, 15),
        (uuid(), 'self_hosted', 9999999, 9999999, 0)
+
+update tbl_project
+set name = 'renamed-proj', access_code = 'test-rename'
+where id = '102585d8-c3c3-4d67-98e2-30ab0862ba7e'

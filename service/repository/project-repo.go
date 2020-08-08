@@ -5,24 +5,22 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func getProjectById(db *sqlx.DB, projectId string) (*data.ProjectData, error){
-	ret := data.ProjectData{}
-	row := db.QueryRow("SELECT * FROM tbl_project WHERE id = ?", projectId)
-	if err := row.Scan(&ret); err != nil {
+func GetProjectById(db *sqlx.DB, projectId string) (*data.ProjectData, error){
+	record := data.ProjectData{}
+	if err := db.QueryRowx("SELECT * FROM tbl_project WHERE id = ?", projectId).StructScan(&record); err != nil {
 		return nil, err
 	} else {
-		return &ret, nil
+		return &record, nil
 	}
 }
 
-func getProjectByName(db *sqlx.DB, name string) (*data.ProjectData, error) {
-	ret := data.ProjectData{}
-	row := db.QueryRow("SELECT * FROM tbl_project WHERE name = ?", name)
-	if err := row.Scan(&ret); err != nil {
-			return nil, err
-		} else {
-			return &ret, nil
-		}
+func GetProjectByName(db *sqlx.DB, name string) (*data.ProjectData, error) {
+	record := data.ProjectData{}
+	if err := db.QueryRowx("SELECT * FROM tbl_project WHERE name = ?", name).StructScan(&record); err != nil {
+		return nil, err
+	} else {
+		return &record, nil
+	}
 }
 
 func GetAllProjects(db *sqlx.DB) (*[]data.ProjectData, error) {
@@ -35,14 +33,27 @@ func GetAllProjects(db *sqlx.DB) (*[]data.ProjectData, error) {
 	}
 }
 
-func createProject(db *sqlx.DB, data *data.ProjectData) error {
+func CreateProject(db *sqlx.DB, data *data.ProjectData) error {
 	query := `
-		INSERT INTO tbl_project(id, name, organisation)
-		VALUES(?,?,?);
+		INSERT INTO tbl_project(id, name, organisation, access_code)
+		VALUES(?,?,?,?);
 	`
-	if _, err := db.Exec(query, data.Id, data.Name, data.Organisation); err != nil {
+	if _, err := db.Exec(query, data.Id, data.Name, data.Organisation, data.AccessToken); err != nil {
 			return err
 		} else {
 			return nil
 		}
+}
+
+func UpdateProject(db *sqlx.DB, data *data.ProjectData) error {
+	query := `
+		UPDATE tbl_project 
+		SET name = ?, access_code = ?, updated_ts = CURRENT_TIMESTAMP
+		WHERE id = ?
+	`
+	if _, err := db.Exec(query, data.Name, data.AccessToken, data.Id); err != nil {
+		return err
+	} else {
+		return nil
+	}
 }

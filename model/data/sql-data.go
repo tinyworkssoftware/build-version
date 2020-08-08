@@ -20,8 +20,10 @@ type OrganisationData struct {
 }
 
 type ProjectData struct {
-	Id string
-	Name string
+	Id string `db:"id"`
+	Name string `db:"name"`
+	AccessToken string `db:"access_code"`
+	ExceededLimit bool `db:"exceeded_limit"`
 	CreatedTs time.Time `db:"created_ts"`
 	UpdatedTs time.Time `db:"updated_ts"`
 	Organisation string `db:"organisation"`

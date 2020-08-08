@@ -1,7 +1,7 @@
 package api
 
 import (
-	request2 "build-version/model/request"
+	request "build-version/model/request"
 	"build-version/service"
 	"encoding/json"
 	"github.com/google/uuid"
@@ -10,13 +10,13 @@ import (
 )
 
 func CreateOrganisationApiHandler(w http.ResponseWriter, r *http.Request) {
-	var request request2.CreateOrg
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	var requestBody request.CreateOrg
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if response, err := service.CreateOrganisation(request); err != nil {
+	if response, err := service.CreateOrganisation(requestBody); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	} else {
@@ -43,3 +43,66 @@ func GetOrganisationApiHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func CreateProjectApiHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	if _, err := uuid.Parse(vars["orgId"]); err != nil {
+		http.Error(w, "Invalid organisation-id", http.StatusBadRequest)
+		return
+	}
+	var requestBody *request.CreateProject
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	requestBody.Organisation = vars["orgId"]
+	if response, err := service.CreateProject(requestBody); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	} else {
+		w.WriteHeader(200)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+}
+
+func GetProjectApiHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	if _, err := uuid.Parse(vars["orgId"]); err != nil {
+		http.Error(w, "Invalid organisation-id", http.StatusBadRequest)
+		return
+	}
+	if _, err := uuid.Parse(vars["projId"]); err != nil {
+		http.Error(w, "Invalid organisation-id", http.StatusBadRequest)
+		return
+	}
+
+	if response, err := service.FindProject(vars["projId"]); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+	}
+}
+
+func RegenerateProjectTokenApiHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	if _, err := uuid.Parse(vars["orgId"]); err != nil {
+		http.Error(w, "Invalid organisationId", http.StatusBadRequest)
+		return
+	}
+	if _, err := uuid.Parse(vars["projId"]); err != nil {
+		http.Error(w, "Invalid projectId", http.StatusBadRequest)
+		return
+	}
+
+	if response, err := service.RegenerateProjectToken(vars["projId"]); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	} else {
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+}
+
