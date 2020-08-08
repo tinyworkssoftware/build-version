@@ -1,53 +1,48 @@
 package repository
 
 import (
-	"build-version/config"
 	"build-version/model/data"
+	"github.com/jmoiron/sqlx"
 )
 
-func getOrganisationById(organisationId string) (*data.OrganisationData, error){
-	conf = config.GetAppConfig()
-	if db, err := ConnectDb(conf); err != nil {
+func GetOrganisationById(db *sqlx.DB, organisationId string) (*data.OrganisationData, error){
+	ret := data.OrganisationData{}
+	row := db.QueryRow("SELECT * FROM tbl_organisation WHERE id = ?", organisationId)
+	if err := row.Scan(&ret); err != nil {
 		return nil, err
 	} else {
-		ret := data.OrganisationData{}
-		row := db.QueryRow("SELECT * FROM tbl_organisation WHERE id = ?", organisationId)
-		if err = row.Scan(&ret); err != nil {
-			return nil, err
-		} else {
-			return &ret, nil
-		}
+		return &ret, nil
 	}
 }
 
-func getOrganisationByName(name string) (*data.OrganisationData, error) {
-	conf = config.GetAppConfig()
-	if db, err := ConnectDb(conf); err != nil {
+func GetOrganisationByName(db *sqlx.DB, name string) (*data.OrganisationData, error) {
+	ret := data.OrganisationData{}
+	row := db.QueryRow("SELECT * FROM tbl_organisation WHERE name = ?", name)
+	if err := row.Scan(&ret); err != nil {
 		return nil, err
 	} else {
-		ret := data.OrganisationData{}
-		row := db.QueryRow("SELECT * FROM tbl_organisation WHERE name = ?", name)
-		if err = row.Scan(&ret); err != nil {
-			return nil, err
-		} else {
-			return &ret, nil
-		}
+		return &ret, nil
 	}
 }
 
-func createOrganisation(data *data.OrganisationData) error {
+func GetAllOrganisation(db *sqlx.DB, ) (*[]data.OrganisationData, error) {
+	query := `SELECT * FROM tbl_organisation;`
+	var records []data.OrganisationData
+	if err := db.Select(&records, query); err != nil {
+		return nil, err
+	} else {
+			return &records, nil
+	}
+}
+
+func CreateOrganisation(db *sqlx.DB, data *data.OrganisationData) error {
 	query := `
 		INSERT INTO tbl_organisation(id, name, plan_type)
 		VALUES(?,?,?);
 	`
-	conf = config.GetAppConfig()
-	if db, err := ConnectDb(conf); err != nil {
+	if _, err := db.Exec(query, data.Id, data.Name, data.PlanType); err != nil {
 		return err
 	} else {
-		if _, err := db.Exec(query, data.Id, data.Name, data.PlanType); err != nil {
-			return err
-		} else {
-			return nil
-		}
+		return nil
 	}
 }

@@ -10,6 +10,7 @@ import (
 var (
 	conf *model.TomlConfig
 )
+
 func GetPlans() (*[]data.PlanData, error) {
 	conf = config.GetAppConfig()
 	if db, err := ConnectDb(conf); err != nil {

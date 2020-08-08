@@ -2,6 +2,7 @@ package main
 
 import (
 	"build-version/api"
+	"build-version/config"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -17,6 +18,7 @@ var (
 )
 
 func main() {
+	config.SetConfigAsEnvironmentVariables()
 	app := App{}
 	app.Initialize()
 	app.Run(port)

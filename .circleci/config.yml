@@ -1,18 +1,17 @@
 version: 2.1
-orbs:
-  codecov: codecov/codecov@1.0.2
+#orbs:
+#  codecov: codecov/codecov@1.0.2
 jobs:
-  test:
+  unit-test:
     docker:
       - image: 'circleci/golang:latest'
     steps:
       - checkout
       - run:
           # Our primary container isn't MYSQL so run a sleep command until it's ready.
-          name: Test
+          name: Unit Test
           command: |
-            go test ./...
-
+            go test -tags unit ./...
 #  build:
 #    machine: true
 #    steps:
