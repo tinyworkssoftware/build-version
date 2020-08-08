@@ -6,12 +6,11 @@ import (
 )
 
 func GetOrganisationById(db *sqlx.DB, organisationId string) (*data.OrganisationData, error){
-	ret := data.OrganisationData{}
-	row := db.QueryRow("SELECT * FROM tbl_organisation WHERE id = ?", organisationId)
-	if err := row.Scan(&ret); err != nil {
+	var record data.OrganisationData
+	if err := db.QueryRowx("SELECT * FROM tbl_organisation WHERE id = ?", organisationId).StructScan(&record); err != nil {
 		return nil, err
 	} else {
-		return &ret, nil
+		return &record, nil
 	}
 }
 

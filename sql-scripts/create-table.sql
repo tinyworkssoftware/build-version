@@ -33,6 +33,7 @@ create table tbl_project (
     created_ts timestamp not null default CURRENT_TIMESTAMP,
     updated_ts timestamp not null default CURRENT_TIMESTAMP,
     organisation varchar(36) not null,
+    exceeded_limit bool not null default false,
     foreign key (organisation) references tbl_organisation(id),
     index (id, name)
 );
