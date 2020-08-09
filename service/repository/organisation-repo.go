@@ -26,7 +26,7 @@ func GetOrganisationByName(db *sqlx.DB, name string) (*data.OrganisationData, er
 
 func GetAllOrganisation(db *sqlx.DB, ) (*[]data.OrganisationData, error) {
 	query := `SELECT * FROM tbl_organisation;`
-	var records []data.OrganisationData
+	var records = make([]data.OrganisationData, 0)
 	if err := db.Select(&records, query); err != nil {
 		return nil, err
 	} else {

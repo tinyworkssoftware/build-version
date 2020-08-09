@@ -9,3 +9,9 @@ type CreateProject struct {
 	Name string `json:"name"`
 	Organisation string `json:"organisation"`
 }
+
+type CreateSession struct {
+	AccessToken string
+	Branch string
+	StartTs string
+}

@@ -106,3 +106,12 @@ func RegenerateProjectTokenApiHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetAvailablePlansApiHandler(w http.ResponseWriter, r *http.Request) {
+	if data, err := service.GetAllPlans(); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		json.NewEncoder(w).Encode(data)
+	}
+}
+
+

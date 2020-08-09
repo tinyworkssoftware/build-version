@@ -11,7 +11,7 @@ var (
 )
 
 func GetPlans(db *sqlx.DB,) (*[]data.PlanData, error) {
-	data := []data.PlanData{}
+	var data = make([]data.PlanData, 0)
 	if err := db.Select(&data, "SELECT * FROM tbl_plan_type"); err != nil {
 		return nil, err
 	} else {

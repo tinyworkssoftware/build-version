@@ -23,9 +23,18 @@ func GetProjectByName(db *sqlx.DB, name string) (*data.ProjectData, error) {
 	}
 }
 
+func GetProjectByAccessToken(db *sqlx.DB, accessToken string) (*data.ProjectData, error) {
+	record := data.ProjectData{}
+	if err := db.QueryRowx("SELECT * FROM tbl_project WHERE access_code = ?", accessToken).StructScan(&record); err != nil {
+		return nil, err
+	} else {
+		return &record, nil
+	}
+}
+
 func GetAllProjects(db *sqlx.DB) (*[]data.ProjectData, error) {
 	query := `SELECT * FROM tbl_project;`
-	var records []data.ProjectData
+	var records = make([]data.ProjectData, 0)
 	if err := db.Select(&records, query); err != nil {
 		return nil, err
 	} else {

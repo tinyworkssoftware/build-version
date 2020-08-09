@@ -41,20 +41,20 @@ create table tbl_project (
 
 create table tbl_session_history (
     id varchar(36) primary key ,
-    start_ts timestamp not null default current_timestamp,
-    end_ts timestamp not null,
+    start_ts timestamp not null default CURRENT_TIMESTAMP,
+    end_ts timestamp not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     associated_version varchar(36) not null ,
     associated_branch varchar(100) not null ,
     project varchar(100) not null ,
     session varchar(100) not null ,
     foreign key (project) references tbl_project(id),
-    foreign key (session) references tbl_session_history(id),
     index (id)
 );
 
 create table tbl_active_session (
     id varchar(36) primary key ,
-    start_ts timestamp not null default current_timestamp,
+    start_ts timestamp not null default CURRENT_TIMESTAMP,
+    end_ts timestamp not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     associated_version varchar(36) not null ,
     associated_branch varchar(100) not null ,
     session varchar(36) not null ,
@@ -69,8 +69,5 @@ values
        (uuid(), 'basic', 1000, 5, 0.99),
        (uuid(), 'professional', 5000, 20, 3.99),
        (uuid(), 'enterprise', 9999999, 9999999, 15),
-       (uuid(), 'self_hosted', 9999999, 9999999, 0)
+       (uuid(), 'self_hosted', 9999999, 9999999, 0);
 
-update tbl_project
-set name = 'renamed-proj', access_code = 'test-rename'
-where id = '102585d8-c3c3-4d67-98e2-30ab0862ba7e'
