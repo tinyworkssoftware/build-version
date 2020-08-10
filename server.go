@@ -74,8 +74,8 @@ func (app *App) InitializeRoutes() {
 func (app *App) InitializeMiddleware() {
 	app.Router.Use(mux.CORSMethodMiddleware(app.Router))
 	app.Router.Use(middleware.LoggingMiddleware)
-	app.Router.Use(middleware.VerifyAuthorizationTokenMiddleware)
 	app.Router.Use(middleware.AddJsonContentTypeMiddleware)
+	app.Router.Use(middleware.VerifyAuthorizationTokenMiddleware)
 }
 
 func (app *App) Run(port string) {

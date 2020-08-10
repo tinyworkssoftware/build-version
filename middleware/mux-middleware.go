@@ -29,8 +29,10 @@ func VerifyAuthorizationTokenMiddleware(next http.Handler) http.Handler {
 					CorrelationId: uuid.New().String(),
 					TransactionTs: time.Now(),
 				})
+				return
 			}
 		}
+
 		next.ServeHTTP(w, r)
 	})
 }
