@@ -7,6 +7,7 @@ import (
 	"build-version/service"
 	"encoding/json"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"net/http"
 	"time"
 )
@@ -31,6 +32,16 @@ func StartSessionApiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func EndSessionApiHandler(w http.ResponseWriter, r *http.Request) {
+	accessToken := r.URL.Query().Get("access_token")
+	sessionId := mux.Vars(r)["sessionId"]
+	if err := common.ValidateEmptyStrings([]string{accessToken, sessionId}); err != nil {
+		common.ErrorJsonResponse(w, http.StatusBadRequest, &response.Error{
+			ErrorMessage:  err.Error(),
+			CorrelationId: r.Header.Get("Correlation-Id"),
+			TransactionTs: time.Now(),
+		})
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 

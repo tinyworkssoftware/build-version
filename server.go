@@ -55,8 +55,8 @@ func (app *App) InitializeRoutes() {
 	router.HandleFunc(fmt.Sprintf("%s/admin/sessions/active", apiPrefix), api.GetAllActiveSessionsApiHandler).Methods(http.MethodGet)
 
 	//NOTE: Session APIs
-	router.HandleFunc(fmt.Sprintf("%s/session/start", apiPrefix), api.StartSessionApiHandler).Methods(http.MethodPost, http.MethodPut)
-	router.HandleFunc(fmt.Sprintf("%s/session/end", apiPrefix), api.EndSessionApiHandler).Methods(http.MethodPost, http.MethodPut)
+	router.HandleFunc(fmt.Sprintf("%s/session", apiPrefix), api.StartSessionApiHandler).Methods(http.MethodPost, http.MethodPut)
+	router.HandleFunc(fmt.Sprintf("%s/session/{sessionId}", apiPrefix), api.EndSessionApiHandler).Methods(http.MethodPost)
 
 	//NOTE: Organisation & Project APIs
 	router.HandleFunc(fmt.Sprintf("%s/organisation", apiPrefix), api.CreateOrganisationApiHandler).Methods(http.MethodPost, http.MethodPut)
@@ -73,6 +73,7 @@ func (app *App) InitializeRoutes() {
 
 func (app *App) InitializeMiddleware() {
 	app.Router.Use(mux.CORSMethodMiddleware(app.Router))
+	app.Router.Use(middleware.AssignCorrelationId)
 	app.Router.Use(middleware.LoggingMiddleware)
 	app.Router.Use(middleware.AddJsonContentTypeMiddleware)
 	app.Router.Use(middleware.VerifyAuthorizationTokenMiddleware)

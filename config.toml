@@ -11,7 +11,7 @@ enable_cache = true
 cache = "redis"
 self_hosted = true
 api_prefix = "v1"
-api_bypass = ["/api/v1/session/start", "/api/v1/session/end"]
+api_bypass = ["/api/v1/session"]
 # log_level can be [debug|info|warn|error] default is error
 log_level = "debug"
 
