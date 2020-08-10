@@ -7,3 +7,8 @@ type Error struct {
 	CorrelationId string `json:"correlation_id"`
 	TransactionTs time.Time `json:"transaction_ts"`
 }
+
+type OrganisationComposite struct {
+	OrganisationId string
+	OrganisationName string
+}

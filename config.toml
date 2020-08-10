@@ -10,8 +10,17 @@ enable_cache = true
 #Cache type can be [redis|dynamodb|mongodb]
 cache = "redis"
 self_hosted = true
+api_prefix = "v1"
+api_bypass = ["/api/v1/session/start", "/api/v1/session/end"]
+# log_level can be [debug|info|warn|error] default is error
+log_level = "debug"
 
 [git]
 #Source can be gitlab|github|bitbucket|gitea
 source = "gitlab"
 access_token=""
+
+[auth]
+user_info_url=""
+public_token_url=""
+auth_url=""

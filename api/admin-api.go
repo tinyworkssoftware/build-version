@@ -1,6 +1,7 @@
 package api
 
 import (
+	"build-version/common"
 	"build-version/model/response"
 	"build-version/service"
 	"encoding/json"
@@ -12,7 +13,7 @@ import (
 func GetAllActiveSessionsApiHandler(w http.ResponseWriter, r *http.Request) {
 	transactionTs := time.Now()
 	if results, err := service.GetActiveSessions(); err != nil {
-		errorJsonResponse(w, http.StatusInternalServerError,
+		common.ErrorJsonResponse(w, http.StatusInternalServerError,
 			&response.Error{
 				ErrorMessage:  err.Error(),
 				CorrelationId: uuid.New().String(),

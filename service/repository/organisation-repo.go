@@ -45,3 +45,4 @@ func CreateOrganisation(db *sqlx.DB, data *data.OrganisationData) error {
 		return nil
 	}
 }
+

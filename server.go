@@ -16,7 +16,7 @@ type App struct {
 }
 
 var (
-	apiPrefix = "/api/v1"
+	apiPrefix = "/api"
 	port = ":8080"
 )
 
@@ -32,11 +32,23 @@ func main() {
 func initializeLogger() {
 	log.SetFormatter(&log.TextFormatter{})
 	log.SetOutput(os.Stdout)
-	log.SetLevel(log.DebugLevel)
 	log.SetReportCaller(true)
+
+	logLevel := config.GetAppConfig().Application.LogLevel
+	if logLevel == "debug" {
+		log.SetLevel(log.DebugLevel)
+	} else if logLevel == "warn" {
+		log.SetLevel(log.WarnLevel)
+	} else if logLevel == "info" {
+		log.SetLevel(log.InfoLevel)
+	} else {
+		log.SetLevel(log.ErrorLevel)
+	}
+
 }
 
 func (app *App) InitializeRoutes() {
+	apiPrefix = fmt.Sprintf("%s/%s", apiPrefix, os.Getenv("API_VERSION"))
 	router := mux.NewRouter()
 	//NOTE: Admin APIs
 	router.HandleFunc(fmt.Sprintf("%s/healthcheck", apiPrefix), api.HealthCheckApiHandler).Methods(http.MethodGet)
@@ -62,6 +74,7 @@ func (app *App) InitializeRoutes() {
 func (app *App) InitializeMiddleware() {
 	app.Router.Use(mux.CORSMethodMiddleware(app.Router))
 	app.Router.Use(middleware.LoggingMiddleware)
+	app.Router.Use(middleware.VerifyAuthorizationTokenMiddleware)
 	app.Router.Use(middleware.AddJsonContentTypeMiddleware)
 }
 
@@ -70,4 +83,5 @@ func (app *App) Run(port string) {
 		panic(err)
 	}
 }
+
 

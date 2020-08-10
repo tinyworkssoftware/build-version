@@ -1,6 +1,7 @@
 package api
 
 import (
+	"build-version/common"
 	"build-version/model/request"
 	"build-version/model/response"
 	"build-version/service"
@@ -18,7 +19,7 @@ func StartSessionApiHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewDecoder(r.Body).Decode(&requestData)
 		requestData.AccessToken = params.Get("access_token")
 		if res, err := service.StartSession(&requestData); err != nil {
-			errorJsonResponse(w, http.StatusInternalServerError, &response.Error{
+			common.ErrorJsonResponse(w, http.StatusInternalServerError, &response.Error{
 				ErrorMessage: err.Error(),
 				CorrelationId: correlationId,
 				TransactionTs: time.Time{},
@@ -28,7 +29,7 @@ func StartSessionApiHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(res)
 		}
 	} else {
-		errorJsonResponse(w, http.StatusBadRequest, &response.Error{
+		common.ErrorJsonResponse(w, http.StatusBadRequest, &response.Error{
 			ErrorMessage: "Required params [access_token] not found.",
 			CorrelationId: correlationId,
 		})
@@ -39,8 +40,3 @@ func EndSessionApiHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func errorJsonResponse(w http.ResponseWriter, statusCode int, errorContent *response.Error) {
-	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(errorContent)
-	return
-}
