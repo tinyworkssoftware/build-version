@@ -44,21 +44,15 @@ create table tbl_session_history (
     associated_version varchar(36) not null ,
     associated_branch varchar(100) not null ,
     project varchar(100) not null ,
-    session varchar(100) not null ,
     foreign key (project) references tbl_project(id),
     index (id)
 );
 
 create table tbl_active_session (
     id varchar(36) primary key ,
-    start_ts timestamp not null default CURRENT_TIMESTAMP,
-    end_ts timestamp not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    associated_version varchar(36) not null ,
-    associated_branch varchar(100) not null ,
     session varchar(36) not null ,
-    project varchar(100) not null ,
-    foreign key (project) references tbl_project(id),
-    index (id)
+    foreign key (session) references tbl_session_history(id),
+    index (id, session)
 );
 
 insert into tbl_plan_type (id, name, request_limit, concurrent_session, price)
@@ -68,4 +62,3 @@ values
        (uuid(), 'professional', 5000, 20, 3.99),
        (uuid(), 'enterprise', 9999999, 9999999, 15),
        (uuid(), 'self_hosted', 9999999, 9999999, 0);
-

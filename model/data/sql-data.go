@@ -29,25 +29,31 @@ type ProjectData struct {
 	Organisation string `db:"organisation"`
 }
 
-type ActiveSessionData struct {
-	Id string
-	StartTs time.Time `db:"start_ts"`
-	EndTs time.Time `db:"end_ts"`
-	AssociatedVersion string `db:"associated_version"`
-	AssociatedBranch string `db:"associated_branch"`
-	Session string
-	Project string
-}
-
 type SessionHistoryData struct {
 	Id string
 	StartTs time.Time `db:"start_ts"`
 	EndTs time.Time `db:"end_ts"`
 	AssociatedVersion string `db:"associated_version"`
 	AssociatedBranch string `db:"associated_branch"`
-	Session string
 	Project string
 }
+
+type ActiveSessionData struct {
+	Id string `db:"id"`
+	SessionId string `db:"session"`
+}
+
+//NOTE: Join model
+type SessionData struct {
+	Id string
+	ActiveSessionId string `db:"active_session_id"`
+	StartTs time.Time `db:"start_ts"`
+	EndTs time.Time `db:"end_ts"`
+	AssociatedVersion string `db:"associated_version"`
+	AssociatedBranch string `db:"associated_branch"`
+	Project string
+}
+
 
 
 

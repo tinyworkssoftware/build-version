@@ -78,7 +78,7 @@ func AddJsonContentTypeMiddleware(next http.Handler) http.Handler {
 func isBypassApi(uri string) bool {
 	uri = strings.Split(uri, "?")[0]
 	for _, bypassApi := range config.GetAppConfig().Application.ApiBypass {
-		if uri == bypassApi {
+		if strings.Contains(uri, bypassApi) {
 			log.Debugf("Bypass API [%v] detected. This doesn't mean that the api is publicly accessible, just accessible with access_token", uri)
 			return true
 		}
