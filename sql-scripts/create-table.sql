@@ -34,7 +34,7 @@ create table tbl_project (
     exceeded_limit bool not null default false,
     access_code varchar(36) not null unique,
     foreign key (organisation) references tbl_organisation(id),
-    index (id, name)
+    index (id, name, access_code)
 );
 
 create table tbl_session_history (

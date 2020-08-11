@@ -2,7 +2,9 @@ package repository
 
 import (
 	"build-version/model/data"
+	"errors"
 	"github.com/jmoiron/sqlx"
+	log "github.com/sirupsen/logrus"
 )
 
 func CreateSessionHistory(db *sqlx.DB, request *data.SessionHistoryData) error {
@@ -69,6 +71,26 @@ func GetSessionById(db *sqlx.DB, id string) (*data.SessionData, error) {
 		return nil, err
 	} else {
 		return &record, nil
+	}
+
+}
+
+func QuickTokenCheck(db *sqlx.DB, accessToken string) error {
+	var query = `
+		SELECT id
+		FROM tbl_project 
+		WHERE access_code = ?
+		LIMIT 1
+	`
+	if row, err := db.Queryx(query, accessToken); err != nil {
+		log.Debugln(err)
+		return err
+	} else {
+		if row.Next() {
+			return nil
+		} else {
+			return errors.New("not found")
+		}
 	}
 
 }

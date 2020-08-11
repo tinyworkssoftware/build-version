@@ -4,6 +4,7 @@ import (
 	"build-version/common"
 	"build-version/config"
 	"build-version/model/response"
+	"build-version/service"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -39,29 +40,28 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 func VerifyAuthorizationTokenMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Debugf("Verifying token...\n")
-		if isBypassApi(r.RequestURI) {
-			if len(r.URL.Query().Get("access_token")) == 0 {
+		if token := r.URL.Query().Get("access_token"); len(token) == 0 {
+			common.ErrorJsonResponse(w, http.StatusUnauthorized, &response.Error{
+				ErrorMessage:  "Required param missing [access_token]",
+				CorrelationId: r.Header.Get("Correlation-Id"),
+				TransactionTs: time.Now(),
+			})
+			return
+		} else {
+			//NOTE: Verify Valid AccessToken
+			if valid := service.CheckValidToken(token); valid == false {
+				log.Debugf("Invalid token")
 				common.ErrorJsonResponse(w, http.StatusUnauthorized, &response.Error{
-					ErrorMessage:  "Required param missing [access_token]",
+					ErrorMessage:  "Invalid access_token",
 					CorrelationId: r.Header.Get("Correlation-Id"),
 					TransactionTs: time.Now(),
 				})
 				return
-			}
-		} else {
-			if authHeader := r.Header.Get("Authorization"); len(authHeader) > 0 {
-				//TODO: implement token code check here when its up.
 			} else {
-				common.ErrorJsonResponse(w, http.StatusUnauthorized, &response.Error{
-					ErrorMessage: "Required header missing [Authorization]",
-					CorrelationId: r.Header.Get("Correlation-Id"),
-					TransactionTs: time.Time{},
-				})
-				return
+				next.ServeHTTP(w, r)
 			}
 		}
 
-		next.ServeHTTP(w, r)
 	})
 }
 
@@ -84,4 +84,17 @@ func isBypassApi(uri string) bool {
 		}
 	}
 	return false
+}
+
+func verifyJwt(r *http.Request) {
+	//if authHeader := r.Header.Get("Authorization"); len(authHeader) > 0 {
+	//	//TODO: implement token code check here when its up.
+	//} else {
+	//	common.ErrorJsonResponse(w, http.StatusUnauthorized, &response.Error{
+	//		ErrorMessage: "Required header missing [Authorization]",
+	//		CorrelationId: r.Header.Get("Correlation-Id"),
+	//		TransactionTs: time.Time{},
+	//	})
+	//	return
+	//}
 }

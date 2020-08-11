@@ -6,4 +6,3 @@ INSERT into tbl_project(id, name, organisation, access_code)
 VALUES(uuid(), 'test-project', (SELECT id from tbl_organisation WHERE name = 'test-org'), uuid());
 
 select * from tbl_project;
-select * from tbl_session_history;

@@ -81,6 +81,18 @@ func GetActiveSessions() (*[]data.ActiveSessionData, error) {
 			return record, nil
 		}
 	}
+}
 
+func CheckValidToken(accessToken string) bool {
+	log.Debugf("Checking token...")
+	if db, err := connectDb(); err  != nil {
+		log.Debugln("Token Check Error", err)
+		return false
+	} else {
+		if err = repository.QuickTokenCheck(db, accessToken); err != nil {
+			return false
+		}
+		return true
+	}
 }
 
